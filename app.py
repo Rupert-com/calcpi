@@ -10,9 +10,6 @@ from random import uniform
 from time import sleep, time, time_ns
 from random import seed, random
 
-seed(9876543457890987654345678987654345)
-
-
 class Point:
     x: int
     y: int
@@ -25,11 +22,9 @@ class Point:
         self.x = x
         self.y = y
 
-    def isWithinSin(self) -> bool:
-        cRVal = np.sqrt(self.x ** 2 + self.y ** 2)
-        return cRVal <= 1
-
-
+    # satisfing (x - center_x)² + (y - center_y)² < radius².
+    def isWithin(self) -> bool:
+        return (self.x - 0.5)**2 + (self.y - 0.5)**2 < 0.5**2
 class app:
     iAmount: int = 0
     iAccur: int = 0
@@ -49,16 +44,13 @@ class app:
         iQ = 0
         iC = 0
         for cPo in self.iPoints:
-            if cPo.isWithinSin():
+            if cPo.isWithin():
                 iC += 1
             else:
                 iQ += 1
 
         if iQ != 0 and iC != 0:
             self.Window["pi"].update(f"π = {iC/iQ}")
-
-    def generateImage(self) -> None:
-        pass
 
     def genWindow(self, size=400) -> None:
         self.size = size
@@ -159,13 +151,13 @@ class app:
         fig.set_size_inches(self.size / float(DPI), self.size / float(DPI))
 
         # Draw Grid and scope
-        ax.plot([-1, -1, 1, 1, -1], [1, -1, -1, 1, 1], linewidth=0.7, color="blue")
-        ax.plot([0, 0], [1.1, -1.1], linewidth=0.7, color="black")
-        ax.plot([-1.1, 1.1], [0, 0], linewidth=0.7, color="blue")
+        ax.plot([0, 0, 1, 1, 0], [1, 0, 0, 1, 1], linewidth=0.7, color="blue")
+        ax.plot([0, 0], [1.1, -0.1], linewidth=0.7, color="black")
+        ax.plot([-0.1, 1.1], [0, 0], linewidth=0.7, color="blue")
 
         # Draw circle
         t = np.linspace(0, np.pi * 2, 1000)
-        ax.plot(np.cos(t), np.sin(t), color="green")
+        ax.plot(np.cos(t)*(0.5)+0.5, np.sin(t)*(0.5)+0.5, color="green")
 
         # Delete current child elements
         canvas = self.Window["fig_cv"].TKCanvas
@@ -178,7 +170,7 @@ class app:
         xArrWithin = []
         yArrWithin = []
         for cPo in self.iPoints:
-            if cPo.isWithinSin():
+            if cPo.isWithin():
                 xArrWithin.append(cPo.x)
                 yArrWithin.append(cPo.y)
             else:
@@ -196,15 +188,16 @@ class app:
 
 
     def genPoint(self) -> Point:
-        x= self.random(seed=self.random(seed=time_ns()))[2]
-        y= self.random(seed=self.random(seed=time_ns()))[2]
+        ## seed(9876543457890987654345678987654345*time_ns())
+        x= random()
+        y= random()
         return Point(x, y)
 
     iCountRan = 0
-    def random(self, seed:int):
-      a = 1664525
-      b = 1013904223
-      m = 2**32
+    def random(self, seed:int, a=1664525,b=1013904223,m=1000003):
+      # a = 1664525
+      # b = 1013904223
+      # m = 2**32
       cSeed = seed if(type(seed) == type(1)) else seed[0]
       for i in range(m):
           cSeed = (a*cSeed+b)%m
