@@ -1,16 +1,8 @@
-def seedLCG(initVal):
-  global rand
-  rand = initVal
-
-def lcg():
-  a = 1664525
-  b = 1013904223
-  m = 2**32
-  global rand
-  rand = (a*rand + b) % m
-  return rand
-
-seedLCG(1)
-
+from time import time_ns
+def zufall(seed,m=2**32,a=101427,b=321):
+    x_a = seed
+    for i in range(m):
+        x_a =(a*x_a+b)%m
+    return x_a    
 for i in range(10):
-  print (lcg())
+  print (zufall(seed=time_ns(), m=2**16))

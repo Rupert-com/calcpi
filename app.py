@@ -152,8 +152,8 @@ class app:
 
         # Draw Grid and scope
         ax.plot([0, 0, 1, 1, 0], [1, 0, 0, 1, 1], linewidth=0.7, color="blue")
-        ax.plot([0, 0], [1.1, -0.1], linewidth=0.7, color="black")
-        ax.plot([-0.1, 1.1], [0, 0], linewidth=0.7, color="blue")
+        ax.plot([0, 0], [1, 0], linewidth=0.7, color="black")
+        ax.plot([0, 1], [0, 0], linewidth=0.7, color="blue")
 
         # Draw circle
         t = np.linspace(0, np.pi * 2, 1000)
@@ -189,23 +189,30 @@ class app:
 
     def genPoint(self) -> Point:
         ## seed(9876543457890987654345678987654345*time_ns())
-        x= random()
-        y= random()
-        return Point(x, y)
+        x= self.random(time_ns())
+        y= self.random(time_ns())
+        return Point(x[1], y[1])
 
-    iCountRan = 0
-    def random(self, seed:int, a=1664525,b=1013904223,m=1000003):
-      # a = 1664525
-      # b = 1013904223
-      # m = 2**32
-      cSeed = seed if(type(seed) == type(1)) else seed[0]
-      for i in range(m):
-          cSeed = (a*cSeed+b)%m
-      cfl = float("0."+str(cSeed))
-      cRVal = [cSeed, cfl, (cfl*2)-1]        
-      self.iCountRan += 1
-      print(f"generated random#{self.iCountRan}: {cRVal}")
-      return cRVal
+    def random(self, seed , m=2**16,a=101427,b=321):
+        x_a = seed 
+        for i in range(m):
+            x_a =(a*x_a+b)%m
+        # print([x_a,x_a/m])
+        return [x_a,x_a/m]   
+        # return [x_a,float("0."+str(x_a))]   
+    # iCountRan = 0
+    # def random(self, seed:int, a=1664525,b=1013904223,m=1000003):
+    #   # a = 1664525
+    #   # b = 1013904223
+    #   # m = 2**32
+    #   cSeed = seed if(type(seed) == type(1)) else seed[0]
+    #   for i in range(m):
+    #       cSeed = (a*cSeed+b)%m
+    #   cfl = float("0."+str(cSeed))
+    #   cRVal = [cSeed, cfl, (cfl*2)-1]        
+    #   self.iCountRan += 1
+    #   print(f"generated random#{self.iCountRan}: {cRVal}")
+    #   return cRVal
 
     
     def Clear(self) -> None:
